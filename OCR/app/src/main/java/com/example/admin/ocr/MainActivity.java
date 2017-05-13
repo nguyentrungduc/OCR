@@ -61,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
     CropImageView imv;
     @BindView(R.id.btndone)
     ImageView btnDone;
-    @BindView(R.id.tv)
-    TextView tv;
 
 
     @Override
@@ -70,6 +68,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        addTrainedData();
+        mTessOCR =new TessOCR();
+
+        btnDone.setVisibility(View.INVISIBLE);
+
+        addListenner();
+
+    }
+
+    private void addTrainedData(){
         String[] paths = new String[] { DATA_PATH, DATA_PATH + "tessdata/" };
 
         for (String path : paths) {
@@ -110,12 +118,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
-        mTessOCR =new TessOCR();
-
-        btnDone.setVisibility(View.INVISIBLE);
-
-        addListenner();
-
     }
 
     private void addListenner() {
@@ -244,9 +246,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void OCR(final Bitmap bitmap) {
         if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialog.show(this, "Processing",
-                    "Please wait...", true);
-            // mResult.setVisibility(V.ViewISIBLE);
+            mProgressDialog = ProgressDialog.show(this, "Đang nhận dạng",
+                    "", true);
+
 
 
         }
@@ -266,10 +268,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         // TODO Auto-generated method stub
                         if (result != null && !result.equals("")) {
-                            String s = result.trim();
                             Log.d(TAG, result);
-                            tv.setText(result);
-
 
                         }
 
