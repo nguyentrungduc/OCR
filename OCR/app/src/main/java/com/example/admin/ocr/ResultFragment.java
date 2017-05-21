@@ -2,10 +2,9 @@ package com.example.admin.ocr;
 
 
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.provider.Telephony;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +12,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.nightonke.boommenu.BoomButtons.BoomButton;
 import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
-import com.nightonke.boommenu.BoomButtons.SimpleCircleButton;
 import com.nightonke.boommenu.BoomButtons.TextOutsideCircleButton;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.ButtonEnum;
 import com.nightonke.boommenu.Piece.PiecePlaceEnum;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,7 +31,11 @@ public class ResultFragment extends Fragment {
     EditText tvOCR;
     @BindView(R.id.boom)
     BoomMenuButton boomButton;
+    @BindView(R.id.tvR)
+    TextView tvRe;
+    String t;
     private static String TAG = ResultFragment.class.toString();
+
 
     public ResultFragment() {
 
@@ -52,8 +47,9 @@ public class ResultFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_result, container, false);
+        t = Ultis.hanldingString(getArguments().getString("data"));
         ButterKnife.bind(this, view);
-        tvOCR.setText( Utilities.hanldingString(getArguments().getString("data")));
+        tvOCR.setText(t);
         initBoom();
         return view;
     }
@@ -70,6 +66,11 @@ public class ResultFragment extends Fragment {
                             .normalText("Lọc trung vị").listener(new OnBMClickListener() {
                                 @Override
                                 public void onBoomButtonClick(int index) {
+                                    Matrix m = Ultis.createMatrix(tvOCR.getText().toString());
+                                    Matrix kq = Filter.MedianFilter(m);
+                                    changeFragment(new ResultFilterFragment(), true,"Lọc trung vi",kq.toString());
+
+
 
                                 }
                             });
@@ -80,8 +81,14 @@ public class ResultFragment extends Fragment {
                     TextOutsideCircleButton.Builder builder = new TextOutsideCircleButton.Builder()
                             .normalImageRes(R.drawable.filter).normalColor(Color.parseColor("#DCEDC2"))
                             .normalText("Lọc trung bình").listener(new OnBMClickListener() {
+
                                 @Override
                                 public void onBoomButtonClick(int index) {
+                                    Matrix m = Ultis.createMatrix(tvOCR.getText().toString());
+                                    Matrix kq = Filter.AverageFilter(m);
+                                    changeFragment(new ResultFilterFragment(), true,"Lọc trung bình",kq.toString());
+
+
 
                                 }
                             });
@@ -91,10 +98,15 @@ public class ResultFragment extends Fragment {
                 case 2: {
                     TextOutsideCircleButton.Builder builder = new TextOutsideCircleButton.Builder()
                             .normalImageRes(R.drawable.filter).normalColor(Color.parseColor("#FFAAA6"))
-                            .normalText("Lọc max").listener(new OnBMClickListener() {
+                            .normalText("Lọc min").listener(new OnBMClickListener() {
                                 @Override
                                 public void onBoomButtonClick(int index) {
-                                    Log.d(TAG, "hiihi");
+                                    Matrix m = Ultis.createMatrix(tvOCR.getText().toString());
+                                    Matrix kq = Filter.MinFilter(m);
+                                    changeFragment(new ResultFilterFragment(), true,"Lọc min",kq.toString());
+
+
+
                                 }
                             });
                     boomButton.addBuilder(builder);
@@ -106,6 +118,10 @@ public class ResultFragment extends Fragment {
                             .normalText("Lọc max").listener(new OnBMClickListener() {
                                 @Override
                                 public void onBoomButtonClick(int index) {
+                                    Matrix m = Ultis.createMatrix(tvOCR.getText().toString());
+                                    Matrix kq = Filter.MaxFilter(m);
+                                    changeFragment(new ResultFilterFragment(), true,"Lọc max",kq.toString());
+
 
                                 }
                             });
@@ -116,6 +132,21 @@ public class ResultFragment extends Fragment {
 
 
         }
+    }
+
+    public void changeFragment(Fragment fragment, boolean addToBackStack,String title, String kq){
+
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
+        bundle.putString("kq",kq);
+
+        fragment.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fl_container123, fragment);
+        if(addToBackStack){
+            fragmentTransaction.addToBackStack(null);
+        }
+        fragmentTransaction.commit();
     }
 
 

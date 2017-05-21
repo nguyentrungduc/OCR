@@ -42,14 +42,18 @@ public class Matrix {
 
     @Override
     public String toString() {
-        String s = null;
+        String s = "";
         for (int i = 0; i < r; i++) {
             for (int j = 0; j < c; j++) {
                 s +=data[i][j];
-                s +=" ";
+                if(j<c-1) {
+                    s += " ";
+                }
             }
             s +="\n";
         }
         return s;
     }
+
+
 }

@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
  * Created by ADMIN on 4/21/2017.
  */
 
-public class Utilities {
+public class Ultis {
     public static int getRow(String s){
         int r = 1;
         for(int i = 0 ;i < s.length(); i ++){
@@ -22,7 +22,9 @@ public class Utilities {
         StringTokenizer st = new StringTokenizer(s);
         int c = 1;
         while(st.hasMoreTokens()){
+            String t = st.nextToken();
             c++;
+
         }
         return c / getRow(s);
     }
@@ -36,11 +38,12 @@ public class Utilities {
             String t = st.nextToken();
             int k = Integer.parseInt(t);
             b.add(k);
+
         }
-        int m[][] = new int[Utilities.getRow(s)][Utilities.getColumn(s)];
+        int m[][] = new int[getRow(s)][getColumn(s)];
         int n = 0;
-        for(int i = 0; i < Utilities.getRow(s); i ++){
-            for(int j = 0; j < Utilities.getColumn(s); j ++){
+        for(int i = 0; i < getRow(s); i ++){
+            for(int  j = 0; j < getColumn(s); j ++){
                 m[i][j] = b.get(n);
                 n++;
             }
@@ -62,5 +65,6 @@ public class Utilities {
         }
         return sblr.toString();
     }
+
 
 }

@@ -12,7 +12,7 @@ public class Filter {
         int b[][] = new int[a.getRow() + 2][a.getColumn() + 2];
         for(int i = 0; i < a.getRow() + 2; i ++){
             for(int j = 0; j < a.getColumn() + 2; j ++){
-                if(j == 0 || j == a.getColumn() + 1)    b[i][j] = 0;
+                if(j == 0 || j == a.getColumn()+ 1)    b[i][j] = 0;
                 if(i == 0 || i == a.getRow() + 1)    b[i][j] = 0;
             }
         }
@@ -25,7 +25,8 @@ public class Filter {
         return new Matrix(b);
     }
 
-    public static Matrix AverageFilter(Matrix a){
+    public static Matrix AverageFilter(Matrix m){
+        Matrix a = createFilterMatrix(m);
         float b[][] = new float[a.getRow() - 2][a.getColumn() - 2];
         int d[][] = new int[a.getRow() - 2][a.getColumn() - 2];
         int c[][]  = a.getData();
@@ -39,7 +40,8 @@ public class Filter {
         return new Matrix(d);
     }
 
-    public static Matrix MedianFilter(Matrix a){
+    public static Matrix MedianFilter(Matrix m){
+        Matrix a = createFilterMatrix(m);
         int b[][] = new int[a.getRow() - 2][a.getColumn() - 2];
         int c[][]  = a.getData();
         for(int i = 1; i < a.getRow() - 1; i ++){
@@ -62,7 +64,8 @@ public class Filter {
         return new Matrix(b);
     }
 
-    public static Matrix MinFilter(Matrix a){
+    public static Matrix MinFilter(Matrix m){
+        Matrix a = createFilterMatrix(m);
         int b[][] = new int[a.getRow() - 2][a.getColumn() - 2];
         int c[][]  = a.getData();
         for(int i = 1; i < a.getRow() - 1; i ++){
@@ -85,7 +88,8 @@ public class Filter {
         return new Matrix(b);
     }
 
-    public static Matrix MaxFilter(Matrix a){
+    public static Matrix MaxFilter(Matrix m){
+        Matrix a = createFilterMatrix(m);
         int b[][] = new int[a.getRow() - 2][a.getColumn() - 2];
         int c[][]  = a.getData();
         for(int i = 1; i < a.getRow() - 1; i ++){

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:clickable="true"
+    android:id="@+id/fl_container123"
     android:background="#355C7D"
     tools:context="com.example.admin.ocr.ResultFragment">
 
@@ -22,6 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <EditText
+                    android:gravity="center"
                     android:layout_gravity="center_vertical"
                     android:background="#77000000"
                     android:textSize="36sp"
@@ -52,6 +54,10 @@
 
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/tvR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 
 </FrameLayout>
