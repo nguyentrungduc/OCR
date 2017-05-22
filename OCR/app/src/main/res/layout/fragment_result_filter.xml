@@ -10,10 +10,12 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_weight="5"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <RelativeLayout
                 android:gravity="center|center_vertical"
                 android:layout_gravity="center"
@@ -26,13 +28,20 @@
                     android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/imvBack"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/ic_arrow_back_black_24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp" />
 
             </RelativeLayout>
 
 
+
         </LinearLayout>
         <LinearLayout
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <RelativeLayout
@@ -41,12 +50,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <TextView
-                    android:textSize="30sp"
+                    android:textSize="35sp"
                     android:gravity="center"
                     android:layout_gravity="center"
                     android:id="@+id/tvRF"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
 
             </RelativeLayout>
 

@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.toString();
     private ProgressDialog mProgressDialog;
     private TessOCR mTessOCR;
-    private Uri outputFileDir;
 
     @BindView(R.id.albunBtn)
     ImageView albumbtn;
@@ -66,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     CropImageView imv;
     @BindView(R.id.btndone)
     ImageView btnDone;
+    Uri file;
 
 
     @Override
@@ -79,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
         }
         if(ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},300);
+        }
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            cambtn.setEnabled(false);
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.CAMERA}, 500);
+
         }
 
 
@@ -131,22 +137,33 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private static File getOutputMediaFile(){
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "CameraDemo");
+
+        if (!mediaStorageDir.exists()){
+            if (!mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return new File(mediaStorageDir.getPath() + File.separator +
+                "IMG_"+ timeStamp + ".jpg");
+    }
+
 
 
     private void addListenner() {
-//        cambtn.setOnClickListener(new View.OnClickListener() {
-//            @RequiresApi(api = Build.VERSION_CODES.N)
-//            @Override
-//            public void onClick(View v) {
-//                dispatchTakePictureIntent();
-//
-//            }
-//        });
+
         cambtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                file = Uri.fromFile(getOutputMediaFile());
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
 
+                startActivityForResult(intent, 100);
 
             }
         });
@@ -179,13 +196,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            setPic();
+
+        if (requestCode == 100) {
+            if (resultCode == RESULT_OK) {
+                imv.setImageUriAsync(file);
+            }
             btnDone.setVisibility(View.VISIBLE);
-
-
-
         }
+
+
         if (requestCode == IMG_RESULT && resultCode == MainActivity.RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
             imv.setImageUriAsync(selectedImage);
@@ -197,27 +216,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void dispatchTakePictureIntent1() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, 1);
-            }
-        }
-    }
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -235,68 +233,15 @@ public class MainActivity extends AppCompatActivity {
         return image;
     }
 
-    private void startCameraActivity(){
-        try{
-            String imagePath = DATA_PATH+ "/imgs";
-            File dir = new File(imagePath);
-            if(!dir.exists()){
-                dir.mkdir();
-            }
-            Log.d(TAG,imagePath);
-            String imageFilePath = imagePath+"/ocr.jpg";
-            outputFileDir = Uri.fromFile(new File(imageFilePath));
-            Log.d(TAG,outputFileDir.toString());
-            final Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileDir);
-            if(pictureIntent.resolveActivity(getPackageManager() ) != null){
-                startActivityForResult(pictureIntent,100);
-            }
-        } catch (Exception e){
-            Log.e(TAG, e.getMessage());
-        }
-    }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, 1);
-            }
-        }
-    }
-
-    private File createImageFile1() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-                .format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        String storageDir = Environment.getExternalStorageDirectory()
-                + "/TessOCR";
-        File dir = new File(storageDir);
-        if (!dir.exists())
-            dir.mkdir();
-
-        File image = new File(storageDir + "/" + imageFileName + ".jpg");
 
 
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-
-    }
 
     public void changeFragment(Fragment fragment, boolean addToBackStack){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.fragment_slide_left_enter,
+                R.anim.fragment_slide_left_exit,
+                R.anim.fragment_slide_right_enter,
+                R.anim.fragment_slide_right_exit)
                 .replace(R.id.activity_main, fragment);
         if(addToBackStack){
             fragmentTransaction.addToBackStack(null);
@@ -388,17 +333,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
-
-        case 200:{
-            if(grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "Read permission denied", Toast.LENGTH_SHORT).show();
+            case 200:{
+                if(grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(this, "Read permission denied", Toast.LENGTH_SHORT).show();
+                }
             }
-        }
-        case 300:{
-            if(grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "Write permission denied", Toast.LENGTH_SHORT).show();
+            case 300:{
+                if(grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(this, "Write permission denied", Toast.LENGTH_SHORT).show();
+                }
             }
-        }
+            case 500:{
+                if(grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(this, "Capture permission denied", Toast.LENGTH_SHORT).show();
+                    cambtn.setEnabled(true);
+                }
+            }
         }
     }
 

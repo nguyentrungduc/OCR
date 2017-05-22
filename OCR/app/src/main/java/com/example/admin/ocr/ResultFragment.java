@@ -1,13 +1,16 @@
 package com.example.admin.ocr;
 
 
+import android.animation.Animator;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -90,6 +93,7 @@ public class ResultFragment extends Fragment {
 
 
 
+
                                 }
                             });
                     boomButton.addBuilder(builder);
@@ -148,6 +152,33 @@ public class ResultFragment extends Fragment {
         }
         fragmentTransaction.commit();
     }
+
+    private void makecolor(final String title,final String kq){
+        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            Animator animator = ViewAnimationUtils.createCircularReveal(boomButton,200,200,0,
+                    Math.max(width,height));
+            animator.setDuration(200);
+            animator.start();
+        }
+        CountDownTimer countDownTimer = new CountDownTimer(300,100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                changeFragment(new ResultFilterFragment(),true,title,kq);
+
+            }
+        }.start();
+    }
+
+
 
 
 
