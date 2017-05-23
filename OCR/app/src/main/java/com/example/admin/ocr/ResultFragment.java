@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
@@ -36,6 +37,8 @@ public class ResultFragment extends Fragment {
     BoomMenuButton boomButton;
     @BindView(R.id.tvR)
     TextView tvRe;
+    @BindView(R.id.imBack)
+    ImageView imBack;
     String t;
     private static String TAG = ResultFragment.class.toString();
 
@@ -53,6 +56,12 @@ public class ResultFragment extends Fragment {
         t = Ultis.hanldingString(getArguments().getString("data"));
         ButterKnife.bind(this, view);
         tvOCR.setText(t);
+        imBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().popBackStack();
+            }
+        });
         initBoom();
         return view;
     }
@@ -82,7 +91,7 @@ public class ResultFragment extends Fragment {
                 }
                 case 1: {
                     TextOutsideCircleButton.Builder builder = new TextOutsideCircleButton.Builder()
-                            .normalImageRes(R.drawable.filter).normalColor(Color.parseColor("#DCEDC2"))
+                            .normalImageRes(R.drawable.filter1).normalColor(Color.parseColor("#DCEDC2"))
                             .normalText("Lọc trung bình").listener(new OnBMClickListener() {
 
                                 @Override
@@ -101,7 +110,7 @@ public class ResultFragment extends Fragment {
                 }
                 case 2: {
                     TextOutsideCircleButton.Builder builder = new TextOutsideCircleButton.Builder()
-                            .normalImageRes(R.drawable.filter).normalColor(Color.parseColor("#FFAAA6"))
+                            .normalImageRes(R.drawable.filter5).normalColor(Color.parseColor("#FFAAA6"))
                             .normalText("Lọc min").listener(new OnBMClickListener() {
                                 @Override
                                 public void onBoomButtonClick(int index) {
@@ -118,7 +127,7 @@ public class ResultFragment extends Fragment {
                 }
                 case 3: {
                     TextOutsideCircleButton.Builder builder = new TextOutsideCircleButton.Builder()
-                            .normalImageRes(R.drawable.filter).normalColor(Color.parseColor("#FF8C94"))
+                            .normalImageRes(R.drawable.filter6).normalColor(Color.parseColor("#FF8C94"))
                             .normalText("Lọc max").listener(new OnBMClickListener() {
                                 @Override
                                 public void onBoomButtonClick(int index) {
@@ -153,30 +162,6 @@ public class ResultFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
-    private void makecolor(final String title,final String kq){
-        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-        int width = metrics.widthPixels;
-        int height = metrics.heightPixels;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            Animator animator = ViewAnimationUtils.createCircularReveal(boomButton,200,200,0,
-                    Math.max(width,height));
-            animator.setDuration(200);
-            animator.start();
-        }
-        CountDownTimer countDownTimer = new CountDownTimer(300,100) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-                changeFragment(new ResultFilterFragment(),true,title,kq);
-
-            }
-        }.start();
-    }
 
 
 

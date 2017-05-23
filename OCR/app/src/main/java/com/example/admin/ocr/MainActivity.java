@@ -196,14 +196,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (requestCode == 100) {
             if (resultCode == RESULT_OK) {
                 imv.setImageUriAsync(file);
+                btnDone.setVisibility(View.VISIBLE);
             }
-            btnDone.setVisibility(View.VISIBLE);
         }
-
 
         if (requestCode == IMG_RESULT && resultCode == MainActivity.RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
@@ -212,28 +210,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
-
-
-
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-
 
 
     public void changeFragment(Fragment fragment, boolean addToBackStack){

@@ -31,6 +31,12 @@
                     android:gravity="center"
                     android:text="OCR"
                     android:textSize="45sp" />
+                <ImageView
+                    android:id="@+id/imBack"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/ic_arrow_back_black_24dp"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp" />
 
             </RelativeLayout>
 
