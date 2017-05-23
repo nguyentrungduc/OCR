@@ -11,12 +11,6 @@
     <uses-feature android:name="android.hardware.camera2" android:required="true"/>
     <uses-feature android:name="android.hardware.camera" android:required="true" />
 
-    <provider
-        android:name="android.support.v4.content.FileProvider"
-        android:authorities="com.mydomain.fileprovider"
-        android:exported="false"
-        android:grantUriPermissions="true">
-    </provider>
 
     <application
         android:allowBackup="true"

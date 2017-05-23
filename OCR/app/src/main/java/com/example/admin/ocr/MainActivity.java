@@ -48,11 +48,9 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
 
 
-    private String mCurrentPhotoPath;
     private static int IMG_RESULT = 2;
     public static final String lang = "eng";
     public static final String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/DemoOCR/";
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final String TAG = MainActivity.class.toString();
     private ProgressDialog mProgressDialog;
     private TessOCR mTessOCR;
@@ -94,10 +92,8 @@ public class MainActivity extends AppCompatActivity {
             File dir = new File(path);
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
-                    Log.v("Main", "ERROR: Creation of directory " + path + " on sdcard failed");
                     break;
                 } else {
-                    Log.v("Main", "Created directory " + path + " on sdcard");
                 }
             }
 
@@ -106,25 +102,18 @@ public class MainActivity extends AppCompatActivity {
             try {
 
                 AssetManager assetManager = getAssets();
-
                 InputStream in = assetManager.open(lang + ".traineddata");
-
                 OutputStream out = new FileOutputStream(DATA_PATH
                         + "tessdata/" + lang + ".traineddata");
-
                 byte[] buf = new byte[1024];
                 int len;
-
                 while ((len = in.read(buf)) > 0) {
                     out.write(buf, 0, len);
                 }
                 in.close();
-
                 out.close();
-
-                 Log.v(TAG, "Copied " + lang + " traineddata");
             } catch (IOException e) {
-                 Log.e(TAG, "Was unable to copy " + lang + " traineddata " + e.toString());
+
             }
 
 
@@ -192,8 +181,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 100) {
@@ -225,25 +212,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void setPic() {
-        int targetW = imv.getWidth();
-        int targetH = imv.getHeight();
-
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor << 1;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        imv.setImageBitmap(bitmap);
-    }
 
     public void OCR(final Bitmap bitmap) {
         if (mProgressDialog == null) {
